@@ -8,6 +8,9 @@ public class Customer extends BaseModel{
     private String email;
     private String password; //TODO to be hashed
 
+    public Customer() {
+    }
+
     public Customer(String name, String email, String password) {
         this.name = name;
         this.email = email;

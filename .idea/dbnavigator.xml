@@ -44,7 +44,7 @@ CREATE TABLE product(
 CREATE TABLE customer(
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(255) NOT NULL,
-    email       varchar(255) not null unique, --unique eklendi
+    email       varchar(255) not null,
     password    varchar(255) not null,
     createdDate date default current_date,
     updatedDate date default current_date
@@ -53,7 +53,7 @@ CREATE TABLE customer(
 CREATE TABLE rent(
     id          SERIAL PRIMARY KEY,
     customer_id int references customer(id),
-    rentDate    timestamp not null, --not null eklendi
+    rentDate    timestamp,
     totalRent   numeric(10,2),
     createdDate date default current_date,
     updatedDate date default current_date
@@ -62,7 +62,7 @@ CREATE TABLE rent(
 CREATE TABLE payment(
     id              SERIAL PRIMARY KEY,
     rent_id         int references rent(id),
-    payment_method  varchar(50) not null, --not null eklendi
+    payment_method  varchar(50),
     amount          numeric(10, 2) not null,
     createdDate     date default current_date,
     updatedDate     date default current_date
@@ -73,14 +73,13 @@ CREATE TABLE payment(
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="consoles/Patika_Vehicle_Rental" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.customer" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.category" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
