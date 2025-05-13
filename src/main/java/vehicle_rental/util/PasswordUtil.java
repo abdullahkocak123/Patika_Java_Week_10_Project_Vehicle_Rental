@@ -32,6 +32,7 @@ public class PasswordUtil {
             if (hex.length() == 1) {
                 builder.append('0');
             }
+            builder.append(hex);
         }
         return builder.toString();
     }

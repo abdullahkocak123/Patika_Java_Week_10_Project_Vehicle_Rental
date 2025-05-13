@@ -6,7 +6,7 @@ public class Customer extends BaseModel{
 
     private String name;
     private String email;
-    private String password; //TODO to be hashed
+    private String password;
 
     public Customer() {
     }

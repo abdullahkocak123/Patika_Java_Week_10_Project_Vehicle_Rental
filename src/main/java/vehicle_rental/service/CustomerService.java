@@ -8,7 +8,7 @@ import vehicle_rental.util.PasswordUtil;
 
 public class CustomerService {
 
-    private CustomerDAO customerDAO;
+    private final CustomerDAO customerDAO;
 
     public CustomerService(){
 
@@ -16,7 +16,7 @@ public class CustomerService {
 
     }
 
-    public void save(String name, String email, String password){
+    public void save(String name, String email, String password) throws VehicleRentalException {
 
         boolean isExist = customerDAO.existByEmail(email);
 
@@ -29,7 +29,7 @@ public class CustomerService {
         System.out.println("Kayıt başarılı.");
     }
 
-    public void login(String email, String password) {
+    public void login(String email, String password) throws VehicleRentalException {
 
         boolean isExist = customerDAO.existByEmail(email);
 

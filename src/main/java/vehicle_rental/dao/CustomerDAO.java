@@ -133,13 +133,17 @@ public class CustomerDAO {
             PreparedStatement ps = connection.prepareStatement(existByEmailScript);
             ps.setString(1, email);
             ResultSet resultSet = ps.executeQuery();
-            customer = new Customer();
-            customer.setId(resultSet.getLong("id"));
-            customer.setName(resultSet.getString("name"));
-            customer.setEmail(resultSet.getString("email"));
-            customer.setPassword(resultSet.getString("password"));
-            customer.setCreatedDate(new Timestamp(resultSet.getDate("createdDate").getTime()).toLocalDateTime());
-            customer.setUpdatedDate(new Timestamp(resultSet.getDate("updatedDate").getTime()).toLocalDateTime());
+
+            while (resultSet.next()){
+                customer = new Customer();
+                customer.setId(resultSet.getLong("id"));
+                customer.setName(resultSet.getString("name"));
+                customer.setEmail(resultSet.getString("email"));
+                customer.setPassword(resultSet.getString("password"));
+                customer.setCreatedDate(new Timestamp(resultSet.getDate("createdDate").getTime()).toLocalDateTime());
+                customer.setUpdatedDate(new Timestamp(resultSet.getDate("updatedDate").getTime()).toLocalDateTime());
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

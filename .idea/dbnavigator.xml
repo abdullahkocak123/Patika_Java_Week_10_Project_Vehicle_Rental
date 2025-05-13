@@ -31,7 +31,7 @@
     updatedDate date default current_date
 );
 
-CREATE TABLE product(
+CREATE TABLE vehicle(
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(255) NOT NULL,
     price       numeric (10, 2),
@@ -66,7 +66,10 @@ CREATE TABLE payment(
     amount          numeric(10, 2) not null,
     createdDate     date default current_date,
     updatedDate     date default current_date
-);]]></console>
+);
+
+--delete from customer where id=2;
+--alter table product rename to vehicle;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

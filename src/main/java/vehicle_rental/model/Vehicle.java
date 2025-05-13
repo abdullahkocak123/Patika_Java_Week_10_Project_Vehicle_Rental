@@ -9,6 +9,9 @@ public class Vehicle extends BaseModel{
     private int stock;
     private Category category;
 
+    public Vehicle() {
+    }
+
     public Vehicle(String name, BigDecimal price, int stock, Category category) {
         this.name = name;
         this.price = price;
