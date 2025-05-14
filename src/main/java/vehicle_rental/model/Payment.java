@@ -10,10 +10,10 @@ public class Payment extends BaseModel{
     private PaymentMethod paymentMethod;
     private BigDecimal amount;
 
-    public Payment(Rent rent, PaymentMethod paymentMethod, BigDecimal amount) {
+    public Payment(Rent rent, PaymentMethod paymentMethod) {
         this.rent = rent;
         this.paymentMethod = paymentMethod;
-        this.amount = amount;
+        this.amount = rent.getTotalRent();
     }
 
     public Rent getRent() {

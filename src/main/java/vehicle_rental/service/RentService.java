@@ -27,7 +27,7 @@ public class RentService {
         rent.setCustomer(customer);
         rent.setTotalRent(totalRent);
 
-        RentDAO.save(rent);
+        rentDAO.save(rent);
 
         return rent;
 
