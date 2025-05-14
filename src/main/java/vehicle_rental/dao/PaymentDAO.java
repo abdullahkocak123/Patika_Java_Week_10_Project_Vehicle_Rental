@@ -1,28 +1,23 @@
 package vehicle_rental.dao;
 
+import vehicle_rental.dao.constants.SqlScriptConstants;
 import vehicle_rental.model.Payment;
+import vehicle_rental.util.DBUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
-public class PaymentDAO {
+public class PaymentDAO implements BaseDAO<Payment> {
 
-    private static final String saveScript = """
-            INSERT INTO payment (rent_id, payment_method, amount)
-            VALUES (?,?,?)
-            """;
 
     public void save(Payment payment) {
 
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String user = "postgres";
-        String password = "postgres";
+        try (Connection connection = DBUtil.getConnection()) {
 
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
-
-            PreparedStatement ps = connection.prepareStatement(saveScript);
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.PAYMENT_SAVE);
             ps.setLong(1, payment.getRent().getId());
             ps.setString(2, payment.getPaymentMethod().name());
             ps.setBigDecimal(3, payment.getAmount());
@@ -30,5 +25,25 @@ public class PaymentDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Payment findById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Payment> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public void update(Payment payment) {
+
+    }
+
+    @Override
+    public void delete(Long id) {
+
     }
 }

@@ -1,28 +1,22 @@
 package vehicle_rental.dao;
 
+import vehicle_rental.dao.constants.SqlScriptConstants;
 import vehicle_rental.model.Customer;
 import vehicle_rental.model.Vehicle;
+import vehicle_rental.util.DBUtil;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VehicleDAO {
-
-    private static final String searchByNameScript = """
-            SELECT * FROM vehicle WHERE name LIKE ?
-            """;
+public class VehicleDAO implements BaseDAO<Vehicle> {
 
     public List<Vehicle> searchByName(String name) {
         List<Vehicle> vehicles = new ArrayList<>();
 
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String user = "postgres";
-        String password = "postgres";
-
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            PreparedStatement ps = connection.prepareStatement(searchByNameScript);
+        try (Connection connection = DBUtil.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_SEARCH_BY_NAME);
             ps.setString(1, "%" + name + "%");
             ResultSet rs = ps.executeQuery();
 
@@ -40,5 +34,30 @@ public class VehicleDAO {
             e.printStackTrace();
         }
         return vehicles;
+    }
+
+    @Override
+    public void save(Vehicle vehicle) {
+
+    }
+
+    @Override
+    public Vehicle findById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Vehicle> findAll() {
+        return List.of();
+    }
+
+    @Override
+    public void update(Vehicle vehicle) {
+
+    }
+
+    @Override
+    public void delete(Long id) {
+
     }
 }
