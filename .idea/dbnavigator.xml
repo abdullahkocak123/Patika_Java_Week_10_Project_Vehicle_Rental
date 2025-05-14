@@ -31,8 +31,8 @@
     updatedDate date default current_date
 );
 
-CREATE TABLE vehicle(
-    id          SERIAL PRIMARY KEY,
+create table vehicle(
+    id          serial primary key,
     name        VARCHAR(255) NOT NULL,
     price       numeric (10, 2),
     stock       int,
@@ -41,8 +41,8 @@ CREATE TABLE vehicle(
     updatedDate date default current_date
 );
 
-CREATE TABLE customer(
-    id          SERIAL PRIMARY KEY,
+create table customer(
+    id          serial primary key,
     name        VARCHAR(255) NOT NULL,
     email       varchar(255) not null,
     password    varchar(255) not null,
@@ -50,8 +50,8 @@ CREATE TABLE customer(
     updatedDate date default current_date
 );
 
-CREATE TABLE rent(
-    id          SERIAL PRIMARY KEY,
+create table rent(
+    id          serial primary key,
     customer_id int references customer(id),
     rentDate    timestamp,
     totalRent   numeric(10,2),
@@ -59,13 +59,22 @@ CREATE TABLE rent(
     updatedDate date default current_date
 );
 
-CREATE TABLE payment(
-    id              SERIAL PRIMARY KEY,
+create table payment(
+    id              serial primary key,
     rent_id         int references rent(id),
     payment_method  varchar(50),
     amount          numeric(10, 2) not null,
     createdDate     date default current_date,
     updatedDate     date default current_date
+);
+
+--sonradan ekledim
+create table users(
+    id SERIAL primary key,
+    username varchar(100) unique not null ,
+    password varchar(200) not null ,
+    role varchar(100) not null ,
+    active boolean default true 
 );
 
 --delete from customer where id=2;
@@ -76,12 +85,16 @@ CREATE TABLE payment(
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/customer" />
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/users" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.users" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.customer" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.category" active-filter-id="" />
   </component>
