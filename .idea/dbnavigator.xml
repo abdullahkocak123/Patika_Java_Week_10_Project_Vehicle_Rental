@@ -68,6 +68,10 @@ create table payment(
     updatedDate     date default current_date
 );
 
+--delete from customer where id=2;
+--alter table product rename to vehicle;
+
+
 --sonradan ekledim
 create table users(
     id SERIAL primary key,
@@ -77,18 +81,19 @@ create table users(
     active boolean default true 
 );
 
---delete from customer where id=2;
---alter table product rename to vehicle;]]></console>
+--tabloya eklemeler:
+alter TABLE vehicle ADD COLUMN created_by INT REFERENCES users(id);
+alter TABLE vehicle ADD COLUMN updated_by INT REFERENCES users(id);
+
+alter TABLE category ADD COLUMN created_by INT REFERENCES users(id);
+alter TABLE category ADD COLUMN updated_by INT REFERENCES users(id);]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/customer" />
-      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/users" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" />

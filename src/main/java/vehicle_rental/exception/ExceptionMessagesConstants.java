@@ -17,4 +17,7 @@ public class ExceptionMessagesConstants {
     public static final String USER_EMAIL_ALREADY_EXIST = "Girilen email zaten kayıtlı!";
 
     public static final String USER_PASSWORD_DOES_NOT_MATCH = "Girilen kullanıcı bilgisi veya şifre yanlış!";
+
+    public static final String USER_IS_NOT_ADMIN = "Giriş yapan kullanıcı ADMIN rolüne sahip değildir!";
+
 }
