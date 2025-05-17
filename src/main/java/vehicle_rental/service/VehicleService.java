@@ -7,6 +7,8 @@ import vehicle_rental.model.User;
 import vehicle_rental.model.Vehicle;
 import vehicle_rental.model.enums.Role;
 
+import java.util.List;
+
 public class VehicleService {
 
     private final VehicleDAO vehicleDAO;
@@ -27,5 +29,19 @@ public class VehicleService {
         vehicleDAO.save(vehicle);
 
         System.out.println("Araç kaydedildi!");
+    }
+
+    public List<Vehicle> getAll(int page) {
+
+        return vehicleDAO.findAll(page);
+    }
+
+    public void deleteById(long id) {
+        vehicleDAO.delete(id);
+        System.out.println("Araç silindi!: " + id);
+    }
+
+    public int getTotalPage() {
+        return vehicleDAO.findTotalPage();
     }
 }

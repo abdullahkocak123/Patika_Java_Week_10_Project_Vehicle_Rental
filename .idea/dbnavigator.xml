@@ -86,7 +86,19 @@ alter TABLE vehicle ADD COLUMN created_by INT REFERENCES users(id);
 alter TABLE vehicle ADD COLUMN updated_by INT REFERENCES users(id);
 
 alter TABLE category ADD COLUMN created_by INT REFERENCES users(id);
-alter TABLE category ADD COLUMN updated_by INT REFERENCES users(id);]]></console>
+alter TABLE category ADD COLUMN updated_by INT REFERENCES users(id);
+
+SELECT  v.id as id,
+        v.name as name,
+        v.price as price,
+        v.stock as stock,
+        c.id as category_id,
+        c.name as category_name
+FROM vehicle v, category c WHERE c.id = v.category_id
+ORDER BY v.id
+LIMIT 3 OFFSET 1;
+
+SELECT COUNT(*) FROM vehicle]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -100,8 +112,9 @@ alter TABLE category ADD COLUMN updated_by INT REFERENCES users(id);]]></console
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.users" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.vehicle" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.customer" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.category" active-filter-id="" />
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.category" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
@@ -136,7 +149,7 @@ alter TABLE category ADD COLUMN updated_by INT REFERENCES users(id);]]></console
           <session-user value="postgres" />
         </database>
         <properties>
-          <auto-commit value="false" />
+          <auto-commit value="true" />
         </properties>
         <ssh-settings>
           <active value="false" />

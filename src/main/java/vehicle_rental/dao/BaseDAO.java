@@ -8,7 +8,7 @@ public interface BaseDAO <T> {
 
     T findById(Long id);
 
-    List <T> findAll();
+    List <T> findAll(int page);
 
     void update (T t);
 

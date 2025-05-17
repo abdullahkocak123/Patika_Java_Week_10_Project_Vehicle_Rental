@@ -51,7 +51,7 @@ public class CustomerDAO implements BaseDAO <Customer>{
 
 
 
-    public List<Customer> findAll(){
+    public List<Customer> findAll(int page){
 
         List<Customer> customers = new ArrayList<>();
 

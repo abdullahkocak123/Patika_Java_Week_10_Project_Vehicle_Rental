@@ -41,6 +41,26 @@ public class SqlScriptConstants {
             VALUES (?,?,?,?,?,?)
             """ ;
 
+    public static final String PRODUCT_FIND_ALL = """
+            SELECT  v.id as id,
+                    v.name as name,
+                    v.price as price,
+                    v.stock as stock,
+                    c.id as category_id,
+                    c.name as category_name
+            FROM vehicle v, category c WHERE c.id = v.category_id
+            ORDER BY v.id
+            LIMIT ? OFFSET ?
+            """;
+
+    public static final String VEHICLE_TOTAL_PAGE_COUNT = """
+            SELECT COUNT(*) FROM vehicle
+            """;
+
+    public static final String VEHİCLE_DELETE = """
+            DELETE FROM vehicle WHERE id = ?
+            """ ;
+
     public static final String USER_SAVE = """
             INSERT INTO users (username, password, role, active)
             VALUES (?,?,?,?)
@@ -54,4 +74,18 @@ public class SqlScriptConstants {
             INSERT INTO category (name, created_by, updated_by)
             VALUES (?,?,?)
             """ ;
+
+    public static final String CATEGORY_DELETE = """
+            DELETE FROM category WHERE id = ?
+            """;
+
+    public static final String CATEGORY_FIND_BY_ID = """
+            SELECT * FROM category WHERE id = ?
+            """ ;
+
+    public static final String CATEGORY_FIND_ALL = """
+            SELECT * FROM category
+            """ ;
+
+
 }

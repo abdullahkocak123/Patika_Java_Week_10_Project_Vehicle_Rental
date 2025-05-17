@@ -1,6 +1,8 @@
 package vehicle_rental.dao;
 
+import vehicle_rental.constants.VehicleRentalConstants;
 import vehicle_rental.dao.constants.SqlScriptConstants;
+import vehicle_rental.model.Category;
 import vehicle_rental.model.Customer;
 import vehicle_rental.model.Vehicle;
 import vehicle_rental.util.DBUtil;
@@ -40,7 +42,7 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
     public void save(Vehicle vehicle) {
 
         try (Connection connection = DBUtil.getConnection();
-        PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHİCLE_SAVE)) {
+             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHİCLE_SAVE)) {
 
             ps.setString(1, vehicle.getName());
             ps.setBigDecimal(2, vehicle.getPrice());
@@ -62,8 +64,32 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
     }
 
     @Override
-    public List<Vehicle> findAll() {
-        return List.of();
+    public List<Vehicle> findAll(int page) {
+
+        List<Vehicle> vehicles = new ArrayList<>();
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.PRODUCT_FIND_ALL)) {
+            int size = VehicleRentalConstants.PAGE_SIZE;
+            int offset = (page -1) * size;
+            ps.setInt(1, size);
+            ps.setInt(2, offset);
+
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                vehicles.add(new Vehicle(rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getBigDecimal("price"),
+                        rs.getInt("stock"),
+                        new Category(rs.getLong("category_id"), rs.getString("category_name"))
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vehicles;
     }
 
     @Override
@@ -74,5 +100,34 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
     @Override
     public void delete(Long id) {
 
+        try (Connection connection = DBUtil.getConnection();
+             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHİCLE_DELETE)
+        ) {
+
+            ps.setLong(1, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public int findTotalPage() {
+
+        try (Connection connection = DBUtil.getConnection();
+        Statement stmt = connection.createStatement()){
+
+            ResultSet rs = stmt.executeQuery(SqlScriptConstants.VEHICLE_TOTAL_PAGE_COUNT);
+
+            if (rs.next()){
+                int totalRows = rs.getInt(1); //9
+                return (int) Math.ceil((double) totalRows/VehicleRentalConstants.PAGE_SIZE);//9/5 - > 2
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

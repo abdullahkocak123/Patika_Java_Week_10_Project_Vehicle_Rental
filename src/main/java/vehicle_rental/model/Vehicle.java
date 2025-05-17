@@ -12,6 +12,14 @@ public class Vehicle extends BaseModel{
     public Vehicle() {
     }
 
+    public Vehicle(Long id, String name, BigDecimal price, int stock, Category category) {
+        this.setId(id);
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.category = category;
+    }
+
     public Vehicle(String name, BigDecimal price, int stock, Category category) {
         this.name = name;
         this.price = price;

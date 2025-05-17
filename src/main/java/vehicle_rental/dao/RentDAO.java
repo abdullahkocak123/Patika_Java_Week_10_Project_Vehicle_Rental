@@ -30,7 +30,7 @@ public class RentDAO implements BaseDAO<Rent> {
     }
 
     @Override
-    public List<Rent> findAll() {
+    public List<Rent> findAll(int page) {
         return List.of();
     }
 
