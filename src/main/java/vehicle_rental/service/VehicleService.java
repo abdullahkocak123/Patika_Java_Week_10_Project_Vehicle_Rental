@@ -44,4 +44,8 @@ public class VehicleService {
     public int getTotalPage() {
         return vehicleDAO.findTotalPage();
     }
+
+    public List<Vehicle> search(String searchVehicleName) {
+        return vehicleDAO.searchByName(searchVehicleName);
+    }
 }

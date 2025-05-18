@@ -1,12 +1,15 @@
 package vehicle_rental.model;
 
+import vehicle_rental.model.enums.CustomerType;
+
 import java.time.LocalDateTime;
 
-public class Customer extends BaseModel{
+public abstract class Customer extends BaseModel{
 
     private String name;
     private String email;
     private String password;
+    private CustomerType customerType;
 
     public Customer() {
     }
@@ -39,5 +42,13 @@ public class Customer extends BaseModel{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public CustomerType getCustomerType() {
+        return customerType;
+    }
+
+    public void setCustomerType(CustomerType customerType) {
+        this.customerType = customerType;
     }
 }

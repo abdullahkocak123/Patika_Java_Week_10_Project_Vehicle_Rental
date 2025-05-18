@@ -3,7 +3,6 @@ package vehicle_rental.dao;
 import vehicle_rental.constants.VehicleRentalConstants;
 import vehicle_rental.dao.constants.SqlScriptConstants;
 import vehicle_rental.model.Category;
-import vehicle_rental.model.Customer;
 import vehicle_rental.model.Vehicle;
 import vehicle_rental.util.DBUtil;
 
@@ -28,8 +27,9 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
                 v.setName(rs.getString("name"));
                 v.setPrice(rs.getBigDecimal("price"));
                 v.setStock(rs.getInt("stock"));
-                v.setCreatedDate(LocalDateTime.parse(rs.getString("createddate")));
-                v.setUpdatedDate(LocalDateTime.parse(rs.getString("updateddate")));
+                //v.setCreatedDate(LocalDateTime.parse(rs.getString("createddate")));
+                //v.setUpdatedDate(LocalDateTime.parse(rs.getString("updateddate")));
+                v.setCategory(new Category(rs.getLong("category_id"), rs.getString("category_name")));
                 vehicles.add(v);
             }
         } catch (SQLException e) {
@@ -42,7 +42,7 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
     public void save(Vehicle vehicle) {
 
         try (Connection connection = DBUtil.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHİCLE_SAVE)) {
+             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_SAVE)) {
 
             ps.setString(1, vehicle.getName());
             ps.setBigDecimal(2, vehicle.getPrice());

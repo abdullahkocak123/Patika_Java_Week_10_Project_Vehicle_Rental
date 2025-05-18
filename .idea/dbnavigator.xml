@@ -74,7 +74,7 @@ create table payment(
 
 --sonradan ekledim
 create table users(
-    id SERIAL primary key,
+    id serial primary key,
     username varchar(100) unique not null ,
     password varchar(200) not null ,
     role varchar(100) not null ,
@@ -88,24 +88,41 @@ alter TABLE vehicle ADD COLUMN updated_by INT REFERENCES users(id);
 alter TABLE category ADD COLUMN created_by INT REFERENCES users(id);
 alter TABLE category ADD COLUMN updated_by INT REFERENCES users(id);
 
-SELECT  v.id as id,
+select  v.id as id,
         v.name as name,
         v.price as price,
         v.stock as stock,
         c.id as category_id,
         c.name as category_name
-FROM vehicle v, category c WHERE c.id = v.category_id
-ORDER BY v.id
-LIMIT 3 OFFSET 1;
+from vehicle v, category c where c.id = v.category_id
+order by v.id
+limit 3 offset 1;
 
-SELECT COUNT(*) FROM vehicle]]></console>
+select count(*) from vehicle
+
+--search by name
+select v.id as id,
+        v.name as name,
+        v.price as price,
+        v.stock as stock,
+        c.id as category_id,
+        c.name as category_name
+from vehicle v
+        left join category c on c.id = v.category_id
+where v.name ilike '%bmw%';
+
+--adding 2 columns for different customer types
+alter TABLE customer ADD COLUMN age int;
+alter TABLE customer ADD COLUMN type VARCHAR(20);]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/customer" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" />

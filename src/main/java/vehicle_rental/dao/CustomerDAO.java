@@ -1,7 +1,9 @@
 package vehicle_rental.dao;
 
 import vehicle_rental.dao.constants.SqlScriptConstants;
+import vehicle_rental.model.CorporateCustomer;
 import vehicle_rental.model.Customer;
+import vehicle_rental.model.IndividualCustomer;
 import vehicle_rental.util.DBUtil;
 
 import java.sql.*;
@@ -10,20 +12,48 @@ import java.util.List;
 
 public class CustomerDAO implements BaseDAO <Customer>{
 
+    @Override
     public void save(Customer customer) {
+
+        throw new UnsupportedOperationException("CustomerDAO için save(Customer) kullanmayınız. " +
+                "Bunun yerine saveIndividual/saveCorporate kullanılmalıdır.");
+
+    }
+
+    public void saveIndividual(IndividualCustomer individualCustomer) {
 
         try (Connection connection = DBUtil.getConnection()){
 
-            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CUSTOMER_SAVE);
-            ps.setString(1, customer.getName());
-            ps.setString(2, customer.getEmail());
-            ps.setString(3, customer.getPassword());
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.INDIVIDUAL_CUSTOMER_SAVE);
+            ps.setString(1, individualCustomer.getName());
+            ps.setString(2, individualCustomer.getEmail());
+            ps.setString(3, individualCustomer.getPassword());
+            ps.setInt(4, individualCustomer.getAge());
+            ps.setString(5, individualCustomer.getCustomerType().name());
             ps.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public void saveCorporate(CorporateCustomer corporateCustomer) {
+
+        try (Connection connection = DBUtil.getConnection()){
+
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CORPORATE_CUSTOMER_SAVE);
+            ps.setString(1, corporateCustomer.getName());
+            ps.setString(2, corporateCustomer.getEmail());
+            ps.setString(3, corporateCustomer.getPassword());
+            ps.setString(4, corporateCustomer.getCustomerType().name());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     public Customer findById(Long id){
 
@@ -35,7 +65,7 @@ public class CustomerDAO implements BaseDAO <Customer>{
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()){
-                customer = new Customer();
+                customer = new IndividualCustomer();
                 customer.setId(resultSet.getLong("id"));
                 customer.setName(resultSet.getString("name"));
                 customer.setEmail(resultSet.getString("email"));
@@ -61,7 +91,7 @@ public class CustomerDAO implements BaseDAO <Customer>{
             ResultSet resultSet = stmt.executeQuery(SqlScriptConstants.CUSTOMER_FIND_ALL);
 
             while (resultSet.next()){
-                Customer customer = new Customer();
+                Customer customer = new IndividualCustomer();
                 customer.setId(resultSet.getLong("id"));
                 customer.setName(resultSet.getString("name"));
                 customer.setEmail(resultSet.getString("email"));
@@ -110,7 +140,7 @@ public class CustomerDAO implements BaseDAO <Customer>{
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()){
-                customer = new Customer();
+                customer = new IndividualCustomer();
                 customer.setId(resultSet.getLong("id"));
                 customer.setName(resultSet.getString("name"));
                 customer.setEmail(resultSet.getString("email"));

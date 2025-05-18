@@ -3,6 +3,7 @@ package vehicle_rental;
 import vehicle_rental.exception.ExceptionMessagesConstants;
 import vehicle_rental.exception.VehicleRentalException;
 import vehicle_rental.model.Category;
+import vehicle_rental.model.Customer;
 import vehicle_rental.model.User;
 import vehicle_rental.model.Vehicle;
 import vehicle_rental.model.enums.Role;
@@ -10,15 +11,17 @@ import vehicle_rental.service.CategoryService;
 import vehicle_rental.service.CustomerService;
 import vehicle_rental.service.UserService;
 import vehicle_rental.service.VehicleService;
-import vehicle_rental.util.PasswordUtil;
 
 import java.math.BigDecimal;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
     private static User LOGINED_USER;
+    private static Customer LOGINED_CUSTOMER;
+
     private static final Scanner scanner = new Scanner(System.in);
     private static final UserService userService = new UserService();
     private static final CategoryService categoryService = new CategoryService();
@@ -136,10 +139,11 @@ public class Main {
             System.out.println("4 - Araç Oluştur");
             System.out.println("5 - Araç Listele");
             System.out.println("6 - Araç Sil");
-            System.out.println("7 - Kiralama Listele");
+            System.out.println("7 - Araç Arama");
+            System.out.println("8 - Araç Filtreleme(Kategori bazlı)");
+            System.out.println("9 - Kiralama Listele");
             System.out.println("0 - Geri");
             System.out.print("Seçim yapınız: ");
-
             String choice = scanner.nextLine();
 
             switch (choice) {
@@ -162,6 +166,12 @@ public class Main {
                     vehicleDelete();
                     break;
                 case "7":
+                    vehicleSearch();
+                    break;
+                case "8":
+                    vehicleFiltering();
+                    break;
+                case "9":
                     rentList();
                     break;
                 case "0":
@@ -170,6 +180,26 @@ public class Main {
                     System.out.println("Geçersiz seçim!");
             }
         }
+    }
+
+    private static void vehicleFiltering() {
+    }
+
+    private static void vehicleSearch() {
+
+        System.out.print("Araç ismi giriniz: ");
+        String searchVehicleName = scanner.nextLine();
+
+        List<Vehicle> vehicles = vehicleService.search(searchVehicleName);
+
+        System.out.println("\n==== ARAÇ LİSTESİ (Arama Sonucu) ====");
+
+        vehicles.forEach(vehicle ->
+                System.out.printf("%s - %s - %s\n", vehicle.getName(), vehicle.getPrice(), vehicle.getCategory().getName())
+        );
+
+        System.out.println("======");
+
     }
 
     private static void rentList() {
@@ -184,7 +214,7 @@ public class Main {
     private static void vehicleList() {
         int totalPage = vehicleService.getTotalPage();
 
-        int page =1;
+        int page = 1;
 
         do {
             List<Vehicle> vehicles = vehicleService.getAll(page);
@@ -200,7 +230,7 @@ public class Main {
             String pageStr = scanner.nextLine();
             page = Integer.parseInt(pageStr);
 
-        }while (page<=totalPage);
+        } while (page <= totalPage);
 
 
     }
@@ -269,10 +299,72 @@ public class Main {
         String password = scanner.nextLine();
 
         CustomerService customerService = new CustomerService();
-        customerService.login(email, password);
+        LOGINED_CUSTOMER =  customerService.login(email, password);
+
+        while (true){
+            System.out.println("1 - Araç Listele");
+            System.out.println("2 - Araç Arama");
+            System.out.println("3 - Araç Filtreleme(Kategori bazlı)");
+            System.out.println("4 - Kiralama Oluştur");
+            System.out.println("5 - Kiralamaları Listele");
+            System.out.println("0 - Geri");
+            System.out.print("Seçim yapınız: ");
+            String choice = scanner.nextLine();
+
+            switch (choice){
+                case "1":
+                    vehicleList();
+                    break;
+                case "2":
+                    vehicleSearch();
+                    break;
+                case "3":
+                    vehicleFiltering();
+                    break;
+                case "4":
+                    rentCreate();
+                    break;
+                case "5":
+                    rentList();
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("Geçersiz seçim!");
+
+            }
+        }
+
+    }
+
+    private static void rentCreate() {
     }
 
     private static void registerCustomer() throws VehicleRentalException {
+
+        while (true){
+            System.out.println("Müşterilik tipi seçiniz: ");
+            System.out.println("1 - Bireysel");
+            System.out.println("2 - Kurumsal");
+            System.out.println("0 - Geri");
+            String choice = scanner.nextLine();
+
+            switch (choice){
+                case "1":
+                    registerIndividualCustomer();
+                    break;
+                case "2":
+                    registerCorporateCustomer();
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("Geçersiz seçim!");
+            }
+        }
+    }
+
+    private static void registerIndividualCustomer() throws VehicleRentalException {
 
         System.out.print("İsim: ");
         String name = scanner.nextLine();
@@ -281,7 +373,36 @@ public class Main {
         System.out.print("Şifre: ");
         String password = scanner.nextLine();
 
+        int age = 0;
+        while (true){ //in case of a non-integer input
+            System.out.print("Yaş: ");
+            try {
+                age =scanner.nextInt();
+                scanner.nextLine();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("Lütfen geçerli bir sayı giriniz: ");
+                scanner.nextLine(); //to clear the wrong input
+            }
+        }
+
+
         CustomerService customerService = new CustomerService();
-        customerService.save(name, email, password);
+        customerService.saveIndividual(name, email, password, age);
     }
+
+    private static void registerCorporateCustomer() throws VehicleRentalException {
+
+        System.out.print("İsim: ");
+        String name = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Şifre: ");
+        String password = scanner.nextLine();
+
+
+        CustomerService customerService = new CustomerService();
+        customerService.saveCorporate(name, email, password);
+    }
+
 }

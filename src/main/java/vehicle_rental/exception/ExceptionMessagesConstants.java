@@ -12,6 +12,8 @@ public class ExceptionMessagesConstants {
 
     public static final String CUSTOMER_PASSWORD_DOES_NOT_MATCH = "Girilen email veya şifre bilgisi yanlış!";
 
+    public static final String INDIVIDUAL_CUSTOMER_HAS_NEGATIVE_AGE = "Yaş pozitif bir sayı olmalıdır!" ;
+
     public static final String USER_EMAIL_DOES_NOT_EXIST = "Girilen email ile bir kullanıcı bulunmamaktadır!";
 
     public static final String USER_EMAIL_ALREADY_EXIST = "Girilen email zaten kayıtlı!";
