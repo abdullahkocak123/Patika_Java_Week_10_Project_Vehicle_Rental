@@ -19,7 +19,7 @@ public class RentService {
     public Rent save(Customer customer, List<Vehicle> vehicles){
 
         BigDecimal totalRent = vehicles.stream()
-                .map(Vehicle::getPrice)
+                .map(Vehicle::getVehicle_cost)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         Rent rent = new Rent();

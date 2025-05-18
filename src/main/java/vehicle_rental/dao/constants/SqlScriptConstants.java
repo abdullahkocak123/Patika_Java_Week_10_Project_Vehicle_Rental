@@ -39,25 +39,34 @@ public class SqlScriptConstants {
     public static final String VEHICLE_SEARCH_BY_NAME = """
             SELECT  v.id as id,
                     v.name as name,
-                    v.price as price,
+                    v.vehicle_cost as vehicle_cost,
                     v.stock as stock,
                     c.id as category_id,
-                    c.name as category_name
+                    c.name as category_name,
+                    v.hourly_rental as hourly_rental,
+                    v.daily_rental as daily_rental,
+                    v.weekly_rental as weekly_rental,
+                    v.monthly_rental as monthly_rental
             FROM vehicle v
             LEFT JOIN category c ON c.id = v.category_id
             WHERE v.name ILIKE ?
             """;
 
     public static final String VEHICLE_SAVE = """
-            INSERT INTO VEHICLE (name, price, stock, category_id, created_by, updated_by)
-            VALUES (?,?,?,?,?,?)
+            INSERT INTO VEHICLE (name, vehicle_cost, stock, category_id, created_by, updated_by, hourly_rental, 
+            daily_rental, weekly_rental, monthly_rental)
+            VALUES (?,?,?,?,?,?,?,?,?,?)
             """;
 
-    public static final String PRODUCT_FIND_ALL = """
+    public static final String VEHICLE_FIND_ALL = """
             SELECT  v.id as id,
                     v.name as name,
-                    v.price as price,
+                    v.vehicle_cost as vehicle_cost,
                     v.stock as stock,
+                    v.hourly_rental as hourly_rental,
+                    v.daily_rental as daily_rental,
+                    v.weekly_rental as weekly_rental,
+                    v.monthly_rental as monthly_rental,
                     c.id as category_id,
                     c.name as category_name
             FROM vehicle v, category c WHERE c.id = v.category_id

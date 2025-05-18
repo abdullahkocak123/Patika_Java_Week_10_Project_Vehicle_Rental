@@ -43,7 +43,7 @@ public class CategoryService {
         if (foundCategory==null){
             throw new VehicleRentalException(ExceptionMessagesConstants.CATEGORY_NOT_FOUND);
         }
-        System.out.println("Kategori bulundu! : " + foundCategory);
+        //System.out.println("Kategori bulundu! : " + foundCategory); //araç kaydında gereksiz çıktı veriyor
         return foundCategory;
     }
 }

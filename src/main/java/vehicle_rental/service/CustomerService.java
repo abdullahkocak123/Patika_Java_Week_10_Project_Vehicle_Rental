@@ -65,7 +65,7 @@ public class CustomerService {
            if (!passwordsEqual){
                throw new VehicleRentalException(ExceptionMessagesConstants.CUSTOMER_PASSWORD_DOES_NOT_MATCH);
            } else {
-               System.out.println("Kullanıcı sisteme giriş yaptı!");
+               System.out.println("Müşteri sisteme giriş yaptı!");
            }
        }
        return foundCustomer;

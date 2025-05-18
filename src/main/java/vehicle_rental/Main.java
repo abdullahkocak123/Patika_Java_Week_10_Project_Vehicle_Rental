@@ -194,8 +194,11 @@ public class Main {
 
         System.out.println("\n==== ARAÇ LİSTESİ (Arama Sonucu) ====");
 
-        vehicles.forEach(vehicle ->
-                System.out.printf("%s - %s - %s\n", vehicle.getName(), vehicle.getPrice(), vehicle.getCategory().getName())
+        vehicles.forEach(v ->
+                System.out.printf("%s - %s - Saatlik(%s) - Günlük(%s) - Haftalık(%s) - Aylık(%s)\n",
+                        v.getName(), v.getCategory().getName(),
+                        v.getHourly_rental(), v.getDaily_rental(),
+                        v.getWeekly_rental(), v.getMonthly_rental())
         );
 
         System.out.println("======");
@@ -221,8 +224,11 @@ public class Main {
 
             System.out.println("\n==== ARAÇ LİSTESİ(Sayfa )" + page + "/" + totalPage + "====");
 
-            vehicles.forEach(vehicle ->
-                    System.out.printf("%s - %s - %s\n", vehicle.getName(), vehicle.getPrice(), vehicle.getCategory().getName())
+            vehicles.forEach(v ->
+                    System.out.printf("%s - %s - Saatlik(%s) - Günlük(%s) - Haftalık(%s) - Aylık(%s)\n",
+                            v.getName(), v.getCategory().getName(),
+                            v.getHourly_rental(), v.getDaily_rental(),
+                            v.getWeekly_rental(), v.getMonthly_rental())
             );
             System.out.println("======");
 
@@ -238,16 +244,26 @@ public class Main {
     private static void vehicleCreate() throws VehicleRentalException {
         System.out.print("Araç ismi giriniz: ");
         String name = scanner.nextLine();
-        System.out.print("Araç kiralama bedelini giriniz: ");
-        String price = scanner.nextLine();
+        System.out.print("Araç bedelini giriniz: ");
+        String vehicle_cost = scanner.nextLine();
         System.out.print("Araç adedini giriniz: ");
         String stock = scanner.nextLine();
         System.out.print("Kategori id giriniz: ");
         String categoryId = scanner.nextLine();
+        System.out.print("Saatlik kiralama bedelini giriniz: ");
+        String hourly_rental = scanner.nextLine();
+        System.out.print("Günlük kiralama bedelini giriniz: ");
+        String daily_rental = scanner.nextLine();
+        System.out.print("Haftalık kiralama bedelini giriniz: ");
+        String weekly_rental = scanner.nextLine();
+        System.out.print("Aylık kiralama bedelini giriniz: ");
+        String monthly_rental = scanner.nextLine();
 
         Category category = categoryService.getById(Long.parseLong(categoryId));
 
-        Vehicle vehicle = new Vehicle(name, new BigDecimal(price), Integer.parseInt(stock), category);
+        Vehicle vehicle = new Vehicle(name, new BigDecimal(vehicle_cost), Integer.parseInt(stock), category,
+                new BigDecimal(hourly_rental),new BigDecimal(daily_rental),new BigDecimal(weekly_rental),
+                new BigDecimal(monthly_rental));
         vehicleService.save(vehicle, LOGINED_USER);
 
     }

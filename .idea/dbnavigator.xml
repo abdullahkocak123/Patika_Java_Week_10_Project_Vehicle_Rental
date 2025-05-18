@@ -113,7 +113,14 @@ where v.name ilike '%bmw%';
 
 --adding 2 columns for different customer types
 alter TABLE customer ADD COLUMN age int;
-alter TABLE customer ADD COLUMN type VARCHAR(20);]]></console>
+alter TABLE customer ADD COLUMN type VARCHAR(20);
+
+ALTER TABLE vehicle RENAME COLUMN price TO vehicle_cost;
+
+ALTER TABLE vehicle ADD COLUMN hourly_rental numeric(10, 2);
+ALTER TABLE vehicle ADD COLUMN daily_rental numeric(10, 2);
+ALTER TABLE vehicle ADD COLUMN weekly_rental numeric(10, 2);
+ALTER TABLE vehicle ADD COLUMN monthly_rental numeric(10, 2);]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -121,7 +128,8 @@ alter TABLE customer ADD COLUMN type VARCHAR(20);]]></console>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
-      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/customer" />
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/vehicle" />
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="consoles/Patika_Vehicle_Rental" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
