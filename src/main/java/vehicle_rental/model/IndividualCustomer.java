@@ -9,6 +9,10 @@ public class IndividualCustomer extends Customer {
     public IndividualCustomer() {
     }
 
+    public IndividualCustomer(Long id) {
+        super(id);
+    }
+
     public IndividualCustomer(String name, String email, String password, int age) {
         super(name, email, password);
         this.setCustomerType(CustomerType.INDIVIDUAL);

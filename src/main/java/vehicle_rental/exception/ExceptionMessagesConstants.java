@@ -3,6 +3,8 @@ package vehicle_rental.exception;
 public class ExceptionMessagesConstants {
 
 
+
+
     private ExceptionMessagesConstants() {
     }
 
@@ -25,5 +27,7 @@ public class ExceptionMessagesConstants {
     public static final String USER_IS_NOT_ACTIVE = "Kullanıcı aktif değil ya da bulunamadı!";
 
     public static final String CATEGORY_NOT_FOUND = "Kategori bulunamadı!" ;
+
+    public static final String VEHICLE_STOCK_IS_NOT_VALID = "İstenilen aracın yeterli stok adedi bulunmamaktadır";
 
 }

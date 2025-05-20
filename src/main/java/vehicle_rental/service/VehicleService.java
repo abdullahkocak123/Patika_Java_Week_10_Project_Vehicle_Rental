@@ -48,4 +48,20 @@ public class VehicleService {
     public List<Vehicle> search(String searchVehicleName) {
         return vehicleDAO.searchByName(searchVehicleName);
     }
+
+    public List<Vehicle> getByCategoryName(String categoryName, int page) {
+        return vehicleDAO.findAllByCategoryName(categoryName, page);
+    }
+
+    public int getTotalPageByFilter(String categoryName) {
+        return vehicleDAO.findTotalPageByFilter(categoryName);
+    }
+
+    public Vehicle getByName(String vehicleName) {
+        return vehicleDAO.findByName(vehicleName);
+    }
+
+    public int getTotalPageAtCart(Long customerId) {
+        return vehicleDAO.findTotalPageAtCart(customerId);
+    }
 }

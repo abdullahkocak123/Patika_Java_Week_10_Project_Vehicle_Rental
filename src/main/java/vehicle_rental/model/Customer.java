@@ -14,6 +14,10 @@ public abstract class Customer extends BaseModel{
     public Customer() {
     }
 
+    public Customer(Long id) {
+        this.setId(id);
+    }
+
     public Customer(String name, String email, String password) {
         this.name = name;
         this.email = email;
@@ -50,5 +54,15 @@ public abstract class Customer extends BaseModel{
 
     public void setCustomerType(CustomerType customerType) {
         this.customerType = customerType;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", customerType=" + customerType +
+                '}';
     }
 }

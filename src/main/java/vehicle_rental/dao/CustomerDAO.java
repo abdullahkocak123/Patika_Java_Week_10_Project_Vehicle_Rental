@@ -4,6 +4,7 @@ import vehicle_rental.dao.constants.SqlScriptConstants;
 import vehicle_rental.model.CorporateCustomer;
 import vehicle_rental.model.Customer;
 import vehicle_rental.model.IndividualCustomer;
+import vehicle_rental.model.enums.CustomerType;
 import vehicle_rental.util.DBUtil;
 
 import java.sql.*;
@@ -132,21 +133,23 @@ public class CustomerDAO implements BaseDAO <Customer>{
 
     public Customer findByEmail(String email) {
 
-        Customer customer = null;
+        IndividualCustomer customer = null;
         try(Connection connection = DBUtil.getConnection()) {
 
             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CUSTOMER_EXIST_BY_EMAIL);
             ps.setString(1, email);
-            ResultSet resultSet = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-            while (resultSet.next()){
+            while (rs.next()){
                 customer = new IndividualCustomer();
-                customer.setId(resultSet.getLong("id"));
-                customer.setName(resultSet.getString("name"));
-                customer.setEmail(resultSet.getString("email"));
-                customer.setPassword(resultSet.getString("password"));
-                customer.setCreatedDate(new Timestamp(resultSet.getDate("createdDate").getTime()).toLocalDateTime());
-                customer.setUpdatedDate(new Timestamp(resultSet.getDate("updatedDate").getTime()).toLocalDateTime());
+                customer.setId(rs.getLong("id"));
+                customer.setName(rs.getString("name"));
+                customer.setEmail(rs.getString("email"));
+                customer.setPassword(rs.getString("password"));
+                customer.setCreatedDate(new Timestamp(rs.getDate("createdDate").getTime()).toLocalDateTime());
+                customer.setUpdatedDate(new Timestamp(rs.getDate("updatedDate").getTime()).toLocalDateTime());
+                customer.setCustomerType(CustomerType.valueOf(rs.getString("type")));
+                customer.setAge(rs.getInt("age"));
             }
 
         } catch (SQLException e) {

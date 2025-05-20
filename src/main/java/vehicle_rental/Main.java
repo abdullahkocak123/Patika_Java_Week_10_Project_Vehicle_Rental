@@ -2,17 +2,15 @@ package vehicle_rental;
 
 import vehicle_rental.exception.ExceptionMessagesConstants;
 import vehicle_rental.exception.VehicleRentalException;
-import vehicle_rental.model.Category;
-import vehicle_rental.model.Customer;
-import vehicle_rental.model.User;
-import vehicle_rental.model.Vehicle;
+import vehicle_rental.model.*;
+import vehicle_rental.model.enums.CustomerType;
+import vehicle_rental.model.enums.RentalDuration;
+import vehicle_rental.model.enums.RentalType;
 import vehicle_rental.model.enums.Role;
-import vehicle_rental.service.CategoryService;
-import vehicle_rental.service.CustomerService;
-import vehicle_rental.service.UserService;
-import vehicle_rental.service.VehicleService;
+import vehicle_rental.service.*;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
@@ -26,6 +24,8 @@ public class Main {
     private static final UserService userService = new UserService();
     private static final CategoryService categoryService = new CategoryService();
     private static final VehicleService vehicleService = new VehicleService();
+    private static final CartService cartService = new CartService();
+    private static final CartItemService cartItemService = new CartItemService();
 
     public static void main(String[] args) {
 
@@ -183,6 +183,33 @@ public class Main {
     }
 
     private static void vehicleFiltering() {
+        System.out.print("Kategori ismi giriniz: ");
+        String categoryName = scanner.nextLine();
+
+        int totalPageByFilter = vehicleService.getTotalPageByFilter(categoryName);
+
+        int page = 1;
+
+        do {
+            List<Vehicle> vehicles = vehicleService.getByCategoryName(categoryName, page);
+
+            System.out.println("\n==== ARAÇ LİSTESİ (Filtreleme Sonucu)(Sayfa )" + page + "/" + totalPageByFilter + "====");
+
+            vehicles.forEach(v ->
+                    System.out.printf("%s - %s - Araç Beddeli(%s) - Saatlik(%s) - Günlük(%s) - Haftalık(%s) - Aylık(%s)\n",
+                            v.getName(), v.getCategory().getName(),
+                            v.getVehicle_cost(),
+                            v.getHourly_rental(), v.getDaily_rental(),
+                            v.getWeekly_rental(), v.getMonthly_rental())
+            );
+            System.out.println("======");
+
+            System.out.print("Sonraki sayfa sayısı: ");
+            String pageStr = scanner.nextLine();
+            page = Integer.parseInt(pageStr);
+
+        } while (page <= totalPageByFilter);
+
     }
 
     private static void vehicleSearch() {
@@ -195,8 +222,9 @@ public class Main {
         System.out.println("\n==== ARAÇ LİSTESİ (Arama Sonucu) ====");
 
         vehicles.forEach(v ->
-                System.out.printf("%s - %s - Saatlik(%s) - Günlük(%s) - Haftalık(%s) - Aylık(%s)\n",
+                System.out.printf("%s - %s - Araç Beddeli(%s) - Saatlik(%s) - Günlük(%s) - Haftalık(%s) - Aylık(%s)\n",
                         v.getName(), v.getCategory().getName(),
+                        v.getVehicle_cost(),
                         v.getHourly_rental(), v.getDaily_rental(),
                         v.getWeekly_rental(), v.getMonthly_rental())
         );
@@ -225,8 +253,9 @@ public class Main {
             System.out.println("\n==== ARAÇ LİSTESİ(Sayfa )" + page + "/" + totalPage + "====");
 
             vehicles.forEach(v ->
-                    System.out.printf("%s - %s - Saatlik(%s) - Günlük(%s) - Haftalık(%s) - Aylık(%s)\n",
+                    System.out.printf("%s - %s - Araç Beddeli(%s) - Saatlik(%s) - Günlük(%s) - Haftalık(%s) - Aylık(%s)\n",
                             v.getName(), v.getCategory().getName(),
+                            v.getVehicle_cost(),
                             v.getHourly_rental(), v.getDaily_rental(),
                             v.getWeekly_rental(), v.getMonthly_rental())
             );
@@ -262,7 +291,7 @@ public class Main {
         Category category = categoryService.getById(Long.parseLong(categoryId));
 
         Vehicle vehicle = new Vehicle(name, new BigDecimal(vehicle_cost), Integer.parseInt(stock), category,
-                new BigDecimal(hourly_rental),new BigDecimal(daily_rental),new BigDecimal(weekly_rental),
+                new BigDecimal(hourly_rental), new BigDecimal(daily_rental), new BigDecimal(weekly_rental),
                 new BigDecimal(monthly_rental));
         vehicleService.save(vehicle, LOGINED_USER);
 
@@ -314,20 +343,23 @@ public class Main {
         System.out.print("Şifre: ");
         String password = scanner.nextLine();
 
-        CustomerService customerService = new CustomerService();
-        LOGINED_CUSTOMER =  customerService.login(email, password);
 
-        while (true){
+        CustomerService customerService = new CustomerService();
+        LOGINED_CUSTOMER = customerService.login(email, password);
+
+        while (true) {
             System.out.println("1 - Araç Listele");
             System.out.println("2 - Araç Arama");
             System.out.println("3 - Araç Filtreleme(Kategori bazlı)");
-            System.out.println("4 - Kiralama Oluştur");
-            System.out.println("5 - Kiralamaları Listele");
+            System.out.println("4 - Sepete Araç Ekle");
+            System.out.println("5 - Sepeti Görüntüle");
+            System.out.println("6 - Sepeti Temizle");
+            System.out.println("7 - Kiralamaları Listele");
             System.out.println("0 - Geri");
             System.out.print("Seçim yapınız: ");
             String choice = scanner.nextLine();
 
-            switch (choice){
+            switch (choice) {
                 case "1":
                     vehicleList();
                     break;
@@ -338,9 +370,15 @@ public class Main {
                     vehicleFiltering();
                     break;
                 case "4":
-                    rentCreate();
+                    addVehicleToCart();
                     break;
                 case "5":
+                    listCart();
+                    break;
+                case "6":
+                    clearCart();
+                    break;
+                case "7":
                     rentList();
                     break;
                 case "0":
@@ -353,19 +391,176 @@ public class Main {
 
     }
 
-    private static void rentCreate() {
+    private static void clearCart() {
+        cartService.clear(LOGINED_CUSTOMER);
     }
+
+    private static void listCart() {
+
+        int totalPageAtCart = vehicleService.getTotalPageAtCart(LOGINED_CUSTOMER.getId());
+
+        int page = 1;
+
+        do {
+            List<CartItem> cartItems = cartItemService.getByCustomer(LOGINED_CUSTOMER, page);
+
+            System.out.println("\n==== ARAÇ LİSTESİ (Filtreleme Sonucu)(Sayfa )" + page + "/" + totalPageAtCart + "====");
+
+            cartItems.forEach(item ->
+                    System.out.printf("%s - %s adet - %s %s - Birim Ücret(%s)\n",
+                            item.getVehicle().getName(),
+                            item.getQuantity(),
+                            item.getRental_duration(),
+                            item.getRentalType().getDisplayName(),
+                            item.getRental_unit_price()));
+
+            System.out.println("======");
+
+            System.out.print("Sonraki sayfa sayısı: ");
+            String pageStr = scanner.nextLine();
+            page = Integer.parseInt(pageStr);
+
+        } while (page <= totalPageAtCart);
+    }
+
+    private static void addVehicleToCart() throws VehicleRentalException {
+
+        boolean isContinue = true;
+
+        if (LOGINED_CUSTOMER == null) {
+            System.out.println("Müşteri oturumu açılmamış");
+            return;
+        }
+
+        BigDecimal deposit = BigDecimal.valueOf(0);
+        while (isContinue) {
+            System.out.print("Araç adı giriniz: ");
+            String vehicleName = scanner.nextLine();
+
+            Vehicle vehicle = vehicleService.getByName(vehicleName);
+
+            if (vehicle == null) {
+                System.out.println("Araç bulunamadı!");
+            } else {
+
+                if (LOGINED_CUSTOMER.getCustomerType() == CustomerType.INDIVIDUAL &&
+                        LOGINED_CUSTOMER instanceof IndividualCustomer &&
+                        vehicle.getVehicle_cost().compareTo(BigDecimal.valueOf(2000000)) > 0) {
+
+                    IndividualCustomer individualCustomer = (IndividualCustomer) LOGINED_CUSTOMER;
+                    if (individualCustomer.getAge() <= 30) {
+                        System.out.println("30 yaşından büyük olmadığınız için bedeli 2 Milyon TL'den fazla " +
+                                "olan (" + vehicle.getVehicle_cost() + " TL)bu aracı kiralayamazsınız!");
+
+                        System.out.println(LOGINED_CUSTOMER);
+                        System.out.println(vehicle);
+                        System.out.println((individualCustomer.getAge()));
+
+                        continue;
+                    } else if (individualCustomer.getAge() > 30) {
+                        System.out.println("Bedeli 2 Milyon TL'den fazla olan (" + vehicle.getVehicle_cost() + " TL) bu aracı " +
+                                "kiralayabilmek için araç bedelinin %10 kadarı depozito alınacaktır!");
+                        deposit = deposit.add(vehicle.getVehicle_cost().divide(BigDecimal.valueOf(10), MathContext.DECIMAL128));
+                    }
+                }
+
+
+                System.out.print("Adet giriniz: ");
+                int quantity = scanner.nextInt();
+                scanner.nextLine();
+
+                if (vehicle.getStock() < quantity) {
+                    throw new VehicleRentalException(ExceptionMessagesConstants.VEHICLE_STOCK_IS_NOT_VALID);
+                }
+
+                BigDecimal rental_amount = null;
+                RentalType rental_type = null;
+                BigDecimal rental_unit_price = null;
+                int rental_duration = 0;
+
+                if (LOGINED_CUSTOMER.getCustomerType() == CustomerType.CORPORATE) {
+                    System.out.println("Kurumsal müşterimiz olduğunuz için kiralamalarınız aylık olarak hesaplanacak!");
+                    rental_type = RentalType.MONTHLY;
+                    rental_unit_price = vehicle.getMonthly_rental();
+                    System.out.println("Kaç aylık kiralama istiyorsunuz?: ");
+                    int time = scanner.nextInt();
+                    scanner.nextLine();
+
+                    rental_amount = vehicle.getMonthly_rental().multiply(BigDecimal.valueOf(quantity))
+                            .multiply(BigDecimal.valueOf(time));
+                } else if (LOGINED_CUSTOMER.getCustomerType() == CustomerType.INDIVIDUAL) {
+                    System.out.print("Kiralama türü giriniz --> saatlik(s), günlük(g), haftalık(h), aylık(a): ");
+                    String rental_type_char = scanner.nextLine().toLowerCase();
+
+
+                    switch (rental_type_char) {
+                        case "s" -> {
+                            rental_unit_price = vehicle.getHourly_rental();
+                            rental_type = RentalType.HOURLY;
+                        }
+                        case "g" -> {
+                            rental_unit_price = vehicle.getDaily_rental();
+                            rental_type = RentalType.DAILY;
+                        }
+                        case "h" -> {
+                            rental_unit_price = vehicle.getWeekly_rental();
+                            rental_type = RentalType.WEEKLY;
+                        }
+                        case "a" -> {
+                            rental_unit_price = vehicle.getMonthly_rental();
+                            rental_type = RentalType.MONTHLY;
+                        }
+                        default -> {
+                            System.out.println("Geçersiz seçim!");
+                            continue;
+                        }
+                    }
+
+
+                    System.out.println("Ne kadar süre(sayısal) kiralamak istiyorsunuz?: ");
+                    rental_duration = scanner.nextInt();
+                    scanner.nextLine();
+
+                    rental_amount = rental_unit_price.multiply(BigDecimal.valueOf(quantity))
+                            .multiply(BigDecimal.valueOf(rental_duration));
+                }
+
+                cartService.addToCart(LOGINED_CUSTOMER, vehicle, quantity, rental_type, rental_duration, rental_unit_price); //rental_amount ve deposit gerekebilir
+
+                System.out.println("Toplam kiralama bedeli: " + rental_amount + "hatalı");
+                System.out.println("Toplam depozito: " + deposit); //kaldırmayı unutma
+
+                String yesNo;
+                while (true) {
+                    System.out.print("Sepetinize araç eklemeye devam etmek ister misiniz? (e/h): ");
+                    yesNo = scanner.nextLine().trim().toLowerCase();
+
+                    if (yesNo.equals("e") || yesNo.equals("h")) {
+                        break;
+                    } else {
+                        System.out.println("Geçersiz seçim! Lütfen sadece 'e' veya 'h' giriniz.");
+                    }
+                }
+
+                if (yesNo.equals("h")) {
+                    isContinue = false;
+                }
+
+            }
+        }
+    }
+
 
     private static void registerCustomer() throws VehicleRentalException {
 
-        while (true){
+        while (true) {
             System.out.println("Müşterilik tipi seçiniz: ");
             System.out.println("1 - Bireysel");
             System.out.println("2 - Kurumsal");
             System.out.println("0 - Geri");
             String choice = scanner.nextLine();
 
-            switch (choice){
+            switch (choice) {
                 case "1":
                     registerIndividualCustomer();
                     break;
@@ -390,10 +585,10 @@ public class Main {
         String password = scanner.nextLine();
 
         int age = 0;
-        while (true){ //in case of a non-integer input
+        while (true) { //in case of a non-integer input
             System.out.print("Yaş: ");
             try {
-                age =scanner.nextInt();
+                age = scanner.nextInt();
                 scanner.nextLine();
                 break;
             } catch (InputMismatchException e) {

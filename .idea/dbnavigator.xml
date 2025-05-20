@@ -69,7 +69,6 @@ create table payment(
 );
 
 --delete from customer where id=2;
---alter table product rename to vehicle;
 
 
 --sonradan ekledim
@@ -120,7 +119,42 @@ ALTER TABLE vehicle RENAME COLUMN price TO vehicle_cost;
 ALTER TABLE vehicle ADD COLUMN hourly_rental numeric(10, 2);
 ALTER TABLE vehicle ADD COLUMN daily_rental numeric(10, 2);
 ALTER TABLE vehicle ADD COLUMN weekly_rental numeric(10, 2);
-ALTER TABLE vehicle ADD COLUMN monthly_rental numeric(10, 2);]]></console>
+ALTER TABLE vehicle ADD COLUMN monthly_rental numeric(10, 2);
+
+SELECT v.id as id,
+                    v.name as name,
+                    v.vehicle_cost as vehicle_cost,
+                    v.stock as stock,
+                    c.id as category_id,
+                    c.name as category_name,
+                    v.hourly_rental as hourly_rental,
+                    v.daily_rental as daily_rental,
+                    v.weekly_rental as weekly_rental,
+                    v.monthly_rental as monthly_rental FROM vehicle v
+JOIN category c ON c.id = v.category_id
+WHERE c.name = 'Otomobil'
+
+SELECT COUNT(*)
+            FROM vehicle v
+            JOIN category c ON c.id = v.category_id
+            WHERE c.name = 'Otomobil'
+
+CREATE TABLE cart (
+id SERIAL PRIMARY KEY,
+customer_id INT NOT NULL REFERENCES customer(id),
+createddate timestamp DEFAULT CURRENT_TIMESTAMP,
+total_amount numeric(10, 2)
+)
+
+CREATE TABLE cart_items (
+id SERIAL PRIMARY KEY,
+cart_id INT NOT NULL REFERENCES cart(id),
+vehicle_id INT NOT NULL REFERENCES vehicle(id),
+quantity INT NOT NULL,
+rental_type VARCHAR(20),
+rental_duration INT NOT NULL,
+rental_unit_price numeric(10, 2)
+)]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -129,7 +163,6 @@ ALTER TABLE vehicle ADD COLUMN monthly_rental numeric(10, 2);]]></console>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
       <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/vehicle" />
-      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="consoles/Patika_Vehicle_Rental" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
@@ -137,9 +170,11 @@ ALTER TABLE vehicle ADD COLUMN monthly_rental numeric(10, 2);]]></console>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.users" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.cart" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.vehicle" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.customer" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.category" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.cart_items" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />

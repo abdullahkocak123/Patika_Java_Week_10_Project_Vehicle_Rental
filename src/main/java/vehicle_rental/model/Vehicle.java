@@ -16,6 +16,14 @@ public class Vehicle extends BaseModel {
     public Vehicle() {
     }
 
+    public Vehicle(long id) {
+        this.setId(id);
+    }
+
+    public Vehicle(String name) {
+        this.name = name;
+    }
+
     public Vehicle(Long id, String name, BigDecimal vehicle_cost, int stock, Category category, BigDecimal hourly_rental,
                    BigDecimal daily_rental, BigDecimal weekly_rental, BigDecimal monthly_rental) {
         this.setId(id);
@@ -103,5 +111,19 @@ public class Vehicle extends BaseModel {
 
     public void setMonthly_rental(BigDecimal monthly_rental) {
         this.monthly_rental = monthly_rental;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "name='" + name + '\'' +
+                ", vehicle_cost=" + vehicle_cost +
+                ", stock=" + stock +
+                ", category=" + category +
+                ", hourly_rental=" + hourly_rental +
+                ", daily_rental=" + daily_rental +
+                ", weekly_rental=" + weekly_rental +
+                ", monthly_rental=" + monthly_rental +
+                '}';
     }
 }

@@ -141,4 +141,105 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
         }
         return 0;
     }
+
+    public List<Vehicle> findAllByCategoryName(String categoryName, int page) {
+        List<Vehicle> vehicles = new ArrayList<>();
+        try (Connection connection = DBUtil.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_FIND_BY_CATEGORY_NAME);
+
+            int size = VehicleRentalConstants.PAGE_SIZE;
+            int offset = (page -1) * size;
+            ps.setString(1, "%" + categoryName + "%");
+            ps.setInt(2, size);
+            ps.setInt(3, offset);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                vehicles.add(new Vehicle(rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getBigDecimal("vehicle_cost"),
+                        rs.getInt("stock"),
+                        new Category(rs.getLong("category_id"), rs.getString("category_name")),
+                        rs.getBigDecimal("hourly_rental"),
+                        rs.getBigDecimal("daily_rental"),
+                        rs.getBigDecimal("weekly_rental"),
+                        rs.getBigDecimal("monthly_rental")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vehicles;
+    }
+
+    public int findTotalPageByFilter(String categoryName) {
+        try (Connection connection = DBUtil.getConnection()){
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_TOTAL_PAGE_BY_FILTER_COUNT);
+            ps.setString(1, "%" + categoryName + "%");
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()){
+                int totalRows = rs.getInt(1); //6
+                return (int) Math.ceil((double) totalRows/VehicleRentalConstants.PAGE_SIZE);//6/5 - > 2
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public Vehicle findByName(String vehicleName) {
+
+        Vehicle vehicle = null;
+        try (Connection connection = DBUtil.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_FIND_BY_NAME);
+
+            //int size = VehicleRentalConstants.PAGE_SIZE;
+            //int offset = (page -1) * size;
+            ps.setString(1, vehicleName);
+            //ps.setInt(2, size);
+            //ps.setInt(3, offset);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                vehicle = new Vehicle(rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getBigDecimal("vehicle_cost"),
+                        rs.getInt("stock"),
+                        //new Category(rs.getLong("category_id"), rs.getString("category_name")),
+                        new Category(rs.getLong("category_id")),
+                        rs.getBigDecimal("hourly_rental"),
+                        rs.getBigDecimal("daily_rental"),
+                        rs.getBigDecimal("weekly_rental"),
+                        rs.getBigDecimal("monthly_rental")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return vehicle;
+    }
+
+    public int findTotalPageAtCart(Long customerId) {
+
+        try (Connection connection = DBUtil.getConnection()){
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_TOTAL_PAGE_AT_CART_COUNT);
+            ps.setLong(1, customerId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()){
+                int totalRows = rs.getInt(1); //6
+                return (int) Math.ceil((double) totalRows/VehicleRentalConstants.PAGE_SIZE);//6/5 - > 2
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
