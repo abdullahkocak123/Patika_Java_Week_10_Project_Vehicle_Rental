@@ -56,7 +56,7 @@ public class CartService {
 
         int affectedRow = cartItemDAO.clear(cart.getId());
 
-        System.out.print("Sepetinizdeki "+ affectedRow + " adet araç silindi\n");
+        System.out.print("Sepetinizdeki "+ affectedRow + " araç silindi.\n");
 
     }
 }

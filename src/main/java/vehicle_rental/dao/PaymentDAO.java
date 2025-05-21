@@ -4,17 +4,15 @@ import vehicle_rental.dao.constants.SqlScriptConstants;
 import vehicle_rental.model.Payment;
 import vehicle_rental.util.DBUtil;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 public class PaymentDAO implements BaseDAO<Payment> {
 
 
-    public void save(Payment payment) {
+    public long save(Payment payment) {
 
+        long generatedId = 0;
         try (Connection connection = DBUtil.getConnection()) {
 
             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.PAYMENT_SAVE);
@@ -22,9 +20,17 @@ public class PaymentDAO implements BaseDAO<Payment> {
             ps.setString(2, payment.getPaymentMethod().name());
             ps.setBigDecimal(3, payment.getAmount());
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+
+            if (rs.next()){
+                generatedId = rs.getLong(1);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return generatedId;
     }
 
     @Override

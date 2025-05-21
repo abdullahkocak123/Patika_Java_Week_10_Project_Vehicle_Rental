@@ -4,7 +4,6 @@ public class ExceptionMessagesConstants {
 
 
 
-
     private ExceptionMessagesConstants() {
     }
 
@@ -29,5 +28,7 @@ public class ExceptionMessagesConstants {
     public static final String CATEGORY_NOT_FOUND = "Kategori bulunamadı!" ;
 
     public static final String VEHICLE_STOCK_IS_NOT_VALID = "İstenilen aracın yeterli stok adedi bulunmamaktadır";
+
+    public static final String CART_ITEMS_EMPTY = "Sepetiniz boş!";
 
 }

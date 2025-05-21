@@ -64,4 +64,10 @@ public class VehicleService {
     public int getTotalPageAtCart(Long customerId) {
         return vehicleDAO.findTotalPageAtCart(customerId);
     }
+
+    public void updateStock(Vehicle vehicle, int quantity) {
+        Vehicle foundVehicle = vehicleDAO.findById(vehicle.getId());
+        vehicleDAO.updateStock(vehicle.getId(), foundVehicle.getStock() - quantity);
+        System.out.println(foundVehicle. getName() +" aracın stok bilgileri güncellendi.");
+    }
 }

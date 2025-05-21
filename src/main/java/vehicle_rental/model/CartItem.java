@@ -18,6 +18,10 @@ public class CartItem {
     public CartItem() {
     }
 
+    public CartItem(Long id) {
+        this.id = id;
+    }
+
     public CartItem(Long id, Vehicle vehicle, Cart cart, Integer quantity, RentalType rentalType, Integer rental_duration, BigDecimal rental_unit_price) {
         this.id = id;
         this.vehicle = vehicle;

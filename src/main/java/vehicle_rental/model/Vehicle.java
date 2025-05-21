@@ -20,6 +20,11 @@ public class Vehicle extends BaseModel {
         this.setId(id);
     }
 
+    public Vehicle(Long id, String name) {
+        this.setId(id);
+        this.name = name;
+    }
+
     public Vehicle(String name) {
         this.name = name;
     }

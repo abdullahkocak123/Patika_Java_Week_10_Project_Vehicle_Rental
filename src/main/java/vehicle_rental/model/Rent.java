@@ -8,12 +8,16 @@ import java.util.List;
 public class Rent extends BaseModel{
 
     private Customer customer;
-    private BigDecimal totalRent; // gerekecek mi?
+    private BigDecimal totalAmount; // gerekecek mi?
     private LocalDateTime rentDate;
-    private List<Vehicle> vehicles;
+    private List<RentItem> RentItems;
 
     public Rent() {
         this.rentDate = LocalDateTime.now();
+    }
+
+    public Rent(Long id) {
+        this.setId(id);
     }
 
     public Rent(Customer customer) {
@@ -29,12 +33,12 @@ public class Rent extends BaseModel{
         this.customer = customer;
     }
 
-    public BigDecimal getTotalRent() {
-        return totalRent;
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setTotalRent(BigDecimal totalRent) {
-        this.totalRent = totalRent;
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public LocalDateTime getRentDate() {
@@ -45,11 +49,11 @@ public class Rent extends BaseModel{
         this.rentDate = rentDate;
     }
 
-    public List<Vehicle> getVehicles() {
-        return vehicles;
+    public List<RentItem> getRentItems() {
+        return RentItems;
     }
 
-    public void setVehicles(List<Vehicle> vehicles) {
-        this.vehicles = vehicles;
+    public void setRentItems(List<RentItem> rentItems) {
+        RentItems = rentItems;
     }
 }

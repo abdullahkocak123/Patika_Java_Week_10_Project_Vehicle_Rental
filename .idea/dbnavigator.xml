@@ -154,7 +154,56 @@ quantity INT NOT NULL,
 rental_type VARCHAR(20),
 rental_duration INT NOT NULL,
 rental_unit_price numeric(10, 2)
-)]]></console>
+)
+
+CREATE TABLE rent_item (
+id SERIAL PRIMARY KEY,
+rent_id INT NOT NULL REFERENCES rent(id),
+cart_item_id INT NOT NULL REFERENCES cart_items(id),
+quantity INT NOT NULL,
+rental_unit_price numeric(10, 2)
+)
+
+--cartService.clear() metodu çalışmıyor, çünkü bağlı olduğu rent_item kaydını silmeye çalışıyor ama başarısız oluyor. Çözüm için;
+
+ALTER TABLE rent_item 
+DROP CONSTRAINT rent_item_cart_item_id_fkey;
+
+ALTER TABLE rent_item
+ADD CONSTRAINT rent_item_cart_item_id_fkey
+FOREIGN KEY (cart_item_id) REFERENCES cart_items(id)
+ON DELETE CASCADE;
+
+--Ama rent_item tablosuna geçmişi raporlama ihtiyacından dolayı silmemek gerektiği için geri aldım
+
+ALTER TABLE rent_item 
+DROP CONSTRAINT rent_item_cart_item_id_fkey;
+
+ALTER TABLE rent_item
+ADD CONSTRAINT rent_item_cart_item_id_fkey
+FOREIGN KEY (cart_item_id) REFERENCES cart_items(id);
+
+--Ama bu da yanlış oldu. rent_item kalmalı, cart_item ve cart silinmeliydi. yapıyı değiştiriyoruz;
+
+DROP TABLE IF EXISTS rent_item;
+
+CREATE TABLE rent_item (
+    id SERIAL PRIMARY KEY,
+    rent_id INT NOT NULL REFERENCES rent(id),
+    vehicle_id INT NOT NULL REFERENCES vehicle(id),
+    rental_type VARCHAR(20) NOT NULL,
+    rental_duration INT NOT NULL,
+    quantity INT NOT NULL,
+    rental_unit_price NUMERIC(10, 2) NOT NULL
+);
+
+
+SELECT *
+FROM rent r
+JOIN rent_item ri ON r.id = ri.rent_id
+JOIN vehicle v ON ri.vehicle_id = v.id
+WHERE r.customer_id = 6
+ORDER BY r.rentdate DESC;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -162,7 +211,10 @@ rental_unit_price numeric(10, 2)
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/cart_items" />
       <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/vehicle" />
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/rent" />
+      <object connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" object-ref="schemas/public/tables/cart" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
@@ -173,8 +225,11 @@ rental_unit_price numeric(10, 2)
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.cart" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.vehicle" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.customer" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.rent" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.rent_item" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.category" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.cart_items" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="905f700e-9cb4-4383-9d3a-4a3d15dfbbf1" dataset="public.payment" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />

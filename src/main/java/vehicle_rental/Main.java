@@ -3,10 +3,7 @@ package vehicle_rental;
 import vehicle_rental.exception.ExceptionMessagesConstants;
 import vehicle_rental.exception.VehicleRentalException;
 import vehicle_rental.model.*;
-import vehicle_rental.model.enums.CustomerType;
-import vehicle_rental.model.enums.RentalDuration;
-import vehicle_rental.model.enums.RentalType;
-import vehicle_rental.model.enums.Role;
+import vehicle_rental.model.enums.*;
 import vehicle_rental.service.*;
 
 import java.math.BigDecimal;
@@ -26,6 +23,7 @@ public class Main {
     private static final VehicleService vehicleService = new VehicleService();
     private static final CartService cartService = new CartService();
     private static final CartItemService cartItemService = new CartItemService();
+    private static final RentService rentService = new RentService();
 
     public static void main(String[] args) {
 
@@ -234,6 +232,31 @@ public class Main {
     }
 
     private static void rentList() {
+
+        List<Rent> rents = rentService.getAllByCustomer(LOGINED_CUSTOMER);
+
+        System.out.println("--------------GEÇMİŞ KİRALAMALARIM-------------");
+
+        for (Rent rent:rents){
+            System.out.printf("Kiralama #%d - %s\n" ,
+                    rent.getId(), rent.getRentDate());
+
+            for (RentItem item : rent.getRentItems()){
+                System.out.printf(" -> %d %s - %d %s - Kira bedeli: %s\n",
+                        item.getQuantity(),
+                        item.getVehicle().getName(),
+                        item.getRental_duration(),
+                        item.getRental_type(),
+                        item.getRental_unit_price().
+                                multiply(BigDecimal.valueOf(item.getQuantity())).
+                                multiply(BigDecimal.valueOf(item.getRental_duration()))
+                        );
+            }
+
+        }
+
+        System.out.println("----------------------------------------------");
+
     }
 
     private static void vehicleDelete() {
@@ -354,7 +377,8 @@ public class Main {
             System.out.println("4 - Sepete Araç Ekle");
             System.out.println("5 - Sepeti Görüntüle");
             System.out.println("6 - Sepeti Temizle");
-            System.out.println("7 - Kiralamaları Listele");
+            System.out.println("7 - Sepetteki Araçları Kirala");
+            System.out.println("8 - Kiralamaları Listele");
             System.out.println("0 - Geri");
             System.out.print("Seçim yapınız: ");
             String choice = scanner.nextLine();
@@ -379,6 +403,9 @@ public class Main {
                     clearCart();
                     break;
                 case "7":
+                    CreateRent();
+                    break;
+                case "8":
                     rentList();
                     break;
                 case "0":
@@ -388,6 +415,34 @@ public class Main {
 
             }
         }
+
+    }
+
+    private static void CreateRent() throws VehicleRentalException {
+
+        System.out.println("ÖDEME YÖNTEMLERİ: ");
+        System.out.println("1 - Kredi kartı");
+        System.out.println("2 - Banka kartı");
+        System.out.println("3 - Paypal");
+        System.out.println("4 - Hesaba transfer");
+        System.out.print("Ödeme yöntemi seçiniz: ");
+
+        int payment_choice = scanner.nextInt();
+        scanner.nextLine();
+
+        PaymentMethod paymentMethod;
+        switch (payment_choice){
+            case 1 -> paymentMethod = PaymentMethod.CREDIT_CARD;
+            case 2 -> paymentMethod = PaymentMethod.DEBIT_CARD;
+            case 3 -> paymentMethod = PaymentMethod.PAYPAL;
+            case 4 -> paymentMethod = PaymentMethod.BANK_TRANSFER;
+            default -> {
+                System.out.println("Geçersiz seçimé");
+                return;
+            }
+        }
+
+        rentService.save(LOGINED_CUSTOMER, paymentMethod);
 
     }
 
@@ -482,7 +537,7 @@ public class Main {
                     System.out.println("Kurumsal müşterimiz olduğunuz için kiralamalarınız aylık olarak hesaplanacak!");
                     rental_type = RentalType.MONTHLY;
                     rental_unit_price = vehicle.getMonthly_rental();
-                    System.out.println("Kaç aylık kiralama istiyorsunuz?: ");
+                    System.out.print("Kaç aylık kiralama istiyorsunuz?: ");
                     int time = scanner.nextInt();
                     scanner.nextLine();
 
@@ -517,7 +572,7 @@ public class Main {
                     }
 
 
-                    System.out.println("Ne kadar süre(sayısal) kiralamak istiyorsunuz?: ");
+                    System.out.print("Ne kadar süre(sayısal) kiralamak istiyorsunuz?: ");
                     rental_duration = scanner.nextInt();
                     scanner.nextLine();
 
@@ -527,8 +582,8 @@ public class Main {
 
                 cartService.addToCart(LOGINED_CUSTOMER, vehicle, quantity, rental_type, rental_duration, rental_unit_price); //rental_amount ve deposit gerekebilir
 
-                System.out.println("Toplam kiralama bedeli: " + rental_amount + "hatalı");
-                System.out.println("Toplam depozito: " + deposit); //kaldırmayı unutma
+                System.out.println("Kiralama bedeli: " + rental_amount);
+                System.out.println("Depozito: " + deposit); //kaldırmayı unutma
 
                 String yesNo;
                 while (true) {
@@ -549,7 +604,6 @@ public class Main {
             }
         }
     }
-
 
     private static void registerCustomer() throws VehicleRentalException {
 
@@ -597,7 +651,6 @@ public class Main {
             }
         }
 
-
         CustomerService customerService = new CustomerService();
         customerService.saveIndividual(name, email, password, age);
     }
@@ -610,7 +663,6 @@ public class Main {
         String email = scanner.nextLine();
         System.out.print("Şifre: ");
         String password = scanner.nextLine();
-
 
         CustomerService customerService = new CustomerService();
         customerService.saveCorporate(name, email, password);

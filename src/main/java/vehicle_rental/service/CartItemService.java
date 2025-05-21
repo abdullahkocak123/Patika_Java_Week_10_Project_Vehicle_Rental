@@ -18,4 +18,8 @@ public class CartItemService {
     public List<CartItem> getByCustomer(Customer loginedCustomer, int page) {
         return cartItemDAO.findByCustomerId(loginedCustomer.getId(), page);
     }
+
+    public List<CartItem> getByCustomerWithoutPaging(Customer loginedCustomer) {
+        return cartItemDAO.findByCustomerIdWithoutPaging(loginedCustomer.getId());
+    }
 }

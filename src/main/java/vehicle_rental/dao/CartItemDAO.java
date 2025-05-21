@@ -37,7 +37,7 @@ public class CartItemDAO {
     public void save(CartItem cartItem) {
 
         try (Connection connection = DBUtil.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CART_ITEM_SAVE)
+             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CART_ITEM_SAVE, PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setLong(1, cartItem.getCart().getId());
             ps.setLong(2, cartItem.getVehicle().getId());
@@ -48,9 +48,17 @@ public class CartItemDAO {
 
             ps.executeUpdate();
 
+            try (ResultSet rs = ps.getGeneratedKeys()){
+                if (rs.next()){
+                    cartItem.setId(rs.getLong(1));
+                }
+
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
 
     public List<CartItem> findByCustomerId(Long customerId, int page) {
@@ -71,6 +79,7 @@ public class CartItemDAO {
 
             while (rs.next()) {
 
+                Long cartItemId =rs.getLong("cart_item_id");
                 Long vehicleId = rs.getLong("vehicle_id");
                 String vehicleName = rs.getString("vehicle_name");
                 int quantity = rs.getInt("quantity");
@@ -82,8 +91,9 @@ public class CartItemDAO {
                 vehicle.setId(vehicleId);
                 vehicle.setName(vehicleName);
 
-                cartItems.add(new CartItem(vehicle, quantity, RentalType.valueOf(rental_type_str), rental_duration, rental_unit_price));
-
+                CartItem cartItem = new CartItem(vehicle, quantity, RentalType.valueOf(rental_type_str), rental_duration, rental_unit_price);
+                cartItem.setId(cartItemId);
+                cartItems.add(cartItem);
 
             }
 
@@ -93,14 +103,12 @@ public class CartItemDAO {
         return cartItems;
     }
 
+    public List<CartItem> findByCustomerIdWithoutPaging(Long customerId) {
 
+        List<CartItem> cartItems = new ArrayList<>();
 
-    /* muhtemelen iptal
-    public List<Cart> findAllByCustomerId(Long customerId) {
-
-        Cart cart = null;
         try (Connection connection = DBUtil.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CART_FIND_ALL_BY_COSTOMER_ID);
+             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CART_ITEM_FIND_BY_CUSTOMER_ID_WITHOUT_PAGING);
         ) {
 
             ps.setLong(1, customerId);
@@ -108,17 +116,29 @@ public class CartItemDAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                cart = new Cart();
 
-                //cart.setItems(List.of(new CartItem(new Vehicle(rs.getString("vehicle_name")))));
+                Long cartItemId = rs.getLong("cart_item_id");
+                Long vehicleId = rs.getLong("vehicle_id");
+                String vehicleName = rs.getString("vehicle_name");
+                int quantity = rs.getInt("quantity");
+                int rental_duration = rs.getInt("rental_duration");
+                String rental_type_str = rs.getString("rental_type");
+                BigDecimal rental_unit_price = rs.getBigDecimal("rental_unit_price");
 
+                Vehicle vehicle = new Vehicle();
+                vehicle.setId(vehicleId);
+                vehicle.setName(vehicleName);
+
+                CartItem cartItem = new CartItem(vehicle, quantity, RentalType.valueOf(rental_type_str), rental_duration, rental_unit_price);
+                cartItem.setId(cartItemId);
+                cartItems.add(cartItem);
 
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return cart;
+        return cartItems;
     }
-     */
+
 }

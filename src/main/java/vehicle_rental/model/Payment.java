@@ -13,7 +13,7 @@ public class Payment extends BaseModel{
     public Payment(Rent rent, PaymentMethod paymentMethod) {
         this.rent = rent;
         this.paymentMethod = paymentMethod;
-        this.amount = rent.getTotalRent();
+        this.amount = rent.getTotalAmount();
     }
 
     public Rent getRent() {

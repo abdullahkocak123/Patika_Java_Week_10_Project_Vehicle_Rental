@@ -3,14 +3,6 @@ package vehicle_rental.dao.constants;
 public class SqlScriptConstants {
 
 
-    public static final String CART_SAVE = """
-            INSERT INTO cart (customer_id, total_amount) VALUES (?,?)
-            RETURNING id
-            """;
-    public static final String CART_ITEM_DELETE = """
-            DELETE FROM cart_items WHERE cart_id = ?
-            """;
-
     private SqlScriptConstants() {
     }
 
@@ -37,6 +29,23 @@ public class SqlScriptConstants {
     public static final String RENT_SAVE = """
             INSERT INTO rent (customer_id, rentdate, totalrent)
             VALUES (?,?,?)
+            """;
+
+    public static final String RENT_FIND_BY_CUSTOMER_ID = """
+            SELECT
+                r.id AS rent_id,
+                r.rentdate,
+                ri.quantity,
+                ri.rental_type,
+                ri.rental_duration,
+                ri.rental_unit_price,
+                v.id AS vehicle_id,
+                v.name AS vehicle_name
+            FROM rent r
+            JOIN rent_item ri ON r.id = ri.rent_id
+            JOIN vehicle v ON ri.vehicle_id = v.id
+            WHERE r.customer_id = ?
+            ORDER BY r.rentdate DESC
             """;
 
     public static final String PAYMENT_SAVE = """
@@ -125,6 +134,14 @@ public class SqlScriptConstants {
             SELECT * FROM vehicle WHERE name ILIKE ?
             """;
 
+    public static final String VEHICLE_FIND_BY_ID = """
+            SELECT * FROM vehicle WHERE id = ?
+            """;
+
+    public static final String VEHICLE_UPDATE_STOCK = """
+            UPDATE vehicle SET stock = ? WHERE id = ?
+            """;
+
     public static final String USER_SAVE = """
             INSERT INTO users (username, password, role, active)
             VALUES (?,?,?,?)
@@ -151,6 +168,11 @@ public class SqlScriptConstants {
             SELECT * FROM category
             """;
 
+    public static final String CART_SAVE = """
+            INSERT INTO cart (customer_id, total_amount) VALUES (?,?)
+            RETURNING id
+            """;
+
     public static final String CART_FIND_BY_COSTOMER_ID = """
             SELECT * FROM cart WHERE customer_id = ?
             """;
@@ -158,6 +180,12 @@ public class SqlScriptConstants {
     public static final String CART_ITEM_SAVE = """
             INSERT INTO cart_items (cart_id, vehicle_id, quantity, rental_type, rental_duration, rental_unit_price)
             VALUES (?,?,?,?,?,?)
+            RETURNING id
+            """;
+
+    public static final String CART_ITEM_DELETE = """
+            DELETE FROM cart_items 
+            WHERE cart_id = ?
             """;
 
     public static final String CART_ITEM_FIND_BY_CUSTOMER_ID = """
@@ -175,6 +203,26 @@ public class SqlScriptConstants {
             WHERE c.customer_id = ?
             ORDER BY v.id
             LIMIT ? OFFSET ?
+            """;
+
+    public static final String CART_ITEM_FIND_BY_CUSTOMER_ID_WITHOUT_PAGING = """
+            SELECT
+            ci.id as cart_item_id,
+            ci.quantity as quantity,
+            ci.rental_type as rental_type,
+            ci.rental_duration as rental_duration,
+            ci.rental_unit_price as rental_unit_price,
+            v.id as vehicle_id,
+            v.name as vehicle_name
+            FROM cart_items ci
+            JOIN cart c ON c.id = ci.cart_id
+            JOIN vehicle v ON v.id = ci.vehicle_id
+            WHERE c.customer_id = ?
+            """;
+
+    public static final String RENT_ITEMS_SAVE = """
+            INSERT INTO rent_item(rent_id, vehicle_id, rental_type, rental_duration, quantity, rental_unit_price)
+                VALUES (?, ?, ?, ?, ?, ?)
             """;
 
     public static final String CART_FIND_ALL_BY_COSTOMER_ID = """

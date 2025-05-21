@@ -42,7 +42,7 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
     }
 
     @Override
-    public void save(Vehicle vehicle) {
+    public long save(Vehicle vehicle) {
 
         try (Connection connection = DBUtil.getConnection();
              PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_SAVE)) {
@@ -62,12 +62,42 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        return 0;
     }
 
     @Override
     public Vehicle findById(Long id) {
-        return null;
+
+        Vehicle vehicle = null;
+
+        try (Connection connection = DBUtil.getConnection();
+
+             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_FIND_BY_ID)) {
+
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                vehicle = new Vehicle();
+                vehicle.setId(rs.getLong("id"));
+                vehicle.setName(rs.getString("name"));
+                vehicle.setVehicle_cost(rs.getBigDecimal("vehicle_cost"));
+                vehicle.setStock(rs.getInt("stock"));
+
+                Category category = new Category();
+                category.setId(rs.getLong("category_id"));
+                vehicle.setCategory(category);
+
+                vehicle.setHourly_rental(rs.getBigDecimal("hourly_rental"));
+                vehicle.setDaily_rental(rs.getBigDecimal("daily_rental"));
+                vehicle.setWeekly_rental(rs.getBigDecimal("weekly_rental"));
+                vehicle.setMonthly_rental(rs.getBigDecimal("monthly_rental"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vehicle;
     }
 
     @Override
@@ -77,7 +107,7 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
         try (Connection connection = DBUtil.getConnection();
              PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_FIND_ALL)) {
             int size = VehicleRentalConstants.PAGE_SIZE;
-            int offset = (page -1) * size;
+            int offset = (page - 1) * size;
             ps.setInt(1, size);
             ps.setInt(2, offset);
 
@@ -127,13 +157,13 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
     public int findTotalPage() {
 
         try (Connection connection = DBUtil.getConnection();
-        Statement stmt = connection.createStatement()){
+             Statement stmt = connection.createStatement()) {
 
             ResultSet rs = stmt.executeQuery(SqlScriptConstants.VEHICLE_TOTAL_PAGE_COUNT);
 
-            if (rs.next()){
+            if (rs.next()) {
                 int totalRows = rs.getInt(1); //9
-                return (int) Math.ceil((double) totalRows/VehicleRentalConstants.PAGE_SIZE);//9/5 - > 2
+                return (int) Math.ceil((double) totalRows / VehicleRentalConstants.PAGE_SIZE);//9/5 - > 2
             }
 
         } catch (SQLException e) {
@@ -148,7 +178,7 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_FIND_BY_CATEGORY_NAME);
 
             int size = VehicleRentalConstants.PAGE_SIZE;
-            int offset = (page -1) * size;
+            int offset = (page - 1) * size;
             ps.setString(1, "%" + categoryName + "%");
             ps.setInt(2, size);
             ps.setInt(3, offset);
@@ -175,14 +205,14 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
     }
 
     public int findTotalPageByFilter(String categoryName) {
-        try (Connection connection = DBUtil.getConnection()){
+        try (Connection connection = DBUtil.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_TOTAL_PAGE_BY_FILTER_COUNT);
             ps.setString(1, "%" + categoryName + "%");
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()){
+            if (rs.next()) {
                 int totalRows = rs.getInt(1); //6
-                return (int) Math.ceil((double) totalRows/VehicleRentalConstants.PAGE_SIZE);//6/5 - > 2
+                return (int) Math.ceil((double) totalRows / VehicleRentalConstants.PAGE_SIZE);//6/5 - > 2
             }
 
         } catch (SQLException e) {
@@ -197,11 +227,7 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
         try (Connection connection = DBUtil.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_FIND_BY_NAME);
 
-            //int size = VehicleRentalConstants.PAGE_SIZE;
-            //int offset = (page -1) * size;
             ps.setString(1, vehicleName);
-            //ps.setInt(2, size);
-            //ps.setInt(3, offset);
 
             ResultSet rs = ps.executeQuery();
 
@@ -227,19 +253,34 @@ public class VehicleDAO implements BaseDAO<Vehicle> {
 
     public int findTotalPageAtCart(Long customerId) {
 
-        try (Connection connection = DBUtil.getConnection()){
+        try (Connection connection = DBUtil.getConnection()) {
             PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_TOTAL_PAGE_AT_CART_COUNT);
             ps.setLong(1, customerId);
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()){
+            if (rs.next()) {
                 int totalRows = rs.getInt(1); //6
-                return (int) Math.ceil((double) totalRows/VehicleRentalConstants.PAGE_SIZE);//6/5 - > 2
+                return (int) Math.ceil((double) totalRows / VehicleRentalConstants.PAGE_SIZE);//6/5 - > 2
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public void updateStock(Long id, int newStock) {
+
+        try (Connection connection = DBUtil.getConnection()) {
+            PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.VEHICLE_UPDATE_STOCK);
+
+            ps.setInt(1, newStock);
+            ps.setLong(2, id);
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

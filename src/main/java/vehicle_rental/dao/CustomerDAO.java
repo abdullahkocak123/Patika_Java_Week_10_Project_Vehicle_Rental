@@ -14,7 +14,7 @@ import java.util.List;
 public class CustomerDAO implements BaseDAO <Customer>{
 
     @Override
-    public void save(Customer customer) {
+    public long save(Customer customer) {
 
         throw new UnsupportedOperationException("CustomerDAO için save(Customer) kullanmayınız. " +
                 "Bunun yerine saveIndividual/saveCorporate kullanılmalıdır.");

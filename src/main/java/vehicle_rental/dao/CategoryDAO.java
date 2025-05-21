@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CategoryDAO implements BaseDAO<Category>{
     @Override
-    public void save(Category category) {
+    public long save(Category category) {
 
         try (Connection connection = DBUtil.getConnection();
              PreparedStatement ps = connection.prepareStatement(SqlScriptConstants.CATEGORY_SAVE)){
@@ -26,6 +26,7 @@ public class CategoryDAO implements BaseDAO<Category>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 
     @Override
