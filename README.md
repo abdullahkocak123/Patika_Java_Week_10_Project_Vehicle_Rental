@@ -49,3 +49,4 @@ Araç kiralama işlemlerini yöneten basit bir Java uygulamasıdır. Müşteri, 
 private static final String URL = "jdbc:postgresql://localhost:5432/arac_kiralama";
 private static final String USER = "postgres";
 private static final String PASSWORD = "postgres";
+
