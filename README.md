@@ -1,51 +1,51 @@
 # 🚗 Vehicle Rental System
 
-Araç kiralama işlemlerini yöneten basit bir Java uygulamasıdır. Müşteri, araç ve kiralama işlemleri yönetilebilir; ayrıca kullanıcı rolleri ve sepet sistemi gibi özellikler de desteklenmektedir.
+A simple Java application for managing vehicle rental operations. It supports managing customers, vehicles, and rental transactions, as well as features like user roles and a shopping cart system.
 
 ---
 
-## 📌 Özellikler
+## 📌 Features
 
-- 👤 Müşteri kaydı ve girişi (bireysel / kurumsal)
-- 🚗 Araç listeleme, arama ve filtreleme (kategoriye göre)
-- 🛒 Sepete araç ekleme, görüntüleme ve temizleme
-- 📦 Sepetteki araçları kiralama ve ödeme işlemi
-- 💳 Ödeme yöntemi seçimi
-- 📜 Kiralama geçmişini görüntüleme
-- 🔐 Kullanıcı rolleri (admin / müşteri)
-- 📆 Kiralama süreleri: saatlik, günlük, haftalık, aylık
+- 👤 Customer registration and login (individual / corporate)
+- 🚗 Vehicle listing, searching, and filtering (by category)
+- 🛒 Add, view, and clear vehicles in the cart
+- 📦 Rent vehicles from the cart and proceed with payment
+- 💳 Choose payment method
+- 📜 View rental history
+- 🔐 User roles (admin / customer)
+- 📆 Rental periods: hourly, daily, weekly, monthly
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+## 🛠️ Technologies Used
 
 - **Java 17+**
 - **PostgreSQL**
 - **JDBC**
 - **Maven**
-- Katmanlı mimari: DAO, Service, Model, Utility sınıfları
+- **Layered architecture: DAO, Service, Model, Utility classes**
 
 ---
 
-## 🗂️ Veritabanı Tabloları
+## 🗂️ Database Tables
 
-- `users`: Sistem kullanıcıları (admin/müşteri)
-- `customer`: Müşteri bilgileri
-- `vehicle`: Kiralanabilir araçlar
-- `category`: Araç kategorileri (otomobil, motosiklet vs.)
-- `cart`, `cart_items`: Sepet ve sepet öğeleri
-- `rent`, `rent_item`: Kiralama işlemleri ve kiralanan araçlar
-- `payment`: Ödeme kayıtları
+- `users`: System users (admin/customer)
+- `customer`: Customer information
+- `vehicle`: Rentable vehicles
+- `category`: Vehicle categories (car, motorcycle, etc.)
+- `cart`, `cart_items`: Shopping cart and cart items
+- `rent`, `rent_item`: Rental transactions and rented vehicles
+- `payment`: Payment records
 
 ---
 
-## ⚙️ Kurulum
+## ⚙️ Setup
 
-1. PostgreSQL'de gerekli tabloları oluştur:
-   - SQL scriptleri `resources/sql` veya `src/main/resources` klasörüne eklenebilir.
-2. `DBUtil.java` içindeki bağlantı ayarlarını kendi veritabanına göre güncelle:
+1. Create the necessary tables in PostgreSQL:
+   - SQL scripts can be added under resources/sql or src/main/resources.
+2. Update the connection settings in DBUtil.java according to your own database:
 
-```java
+
 private static final String URL = "jdbc:postgresql://localhost:5432/arac_kiralama";
 private static final String USER = "postgres";
 private static final String PASSWORD = "postgres";
