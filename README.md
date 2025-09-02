@@ -47,6 +47,8 @@ A simple Java application for managing vehicle rental operations. It supports ma
 
 
 private static final String URL = "jdbc:postgresql://localhost:5432/arac_kiralama";
+
 private static final String USER = "postgres";
+
 private static final String PASSWORD = "postgres";
 
